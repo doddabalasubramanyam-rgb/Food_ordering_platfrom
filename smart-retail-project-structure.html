@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Retail Food Ordering Platform — Project Structure</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent-blue: #3b82f6;
+    --accent-teal: #14b8a6;
+    --accent-purple: #8b5cf6;
+    --accent-green: #22c55e;
+    --accent-orange: #f97316;
+    --accent-pink: #ec4899;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0f1729 0%, #0a1628 50%, #0d1f3c 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 200px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(20,184,166,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.3);
+    color: var(--accent-orange);
+    font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+    padding: 4px 12px; border-radius: 20px; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px; font-weight: 800;
+    color: #fff; line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  h1 span { color: var(--accent-orange); }
+  .subtitle {
+    color: var(--text-muted); font-size: 13px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .tech-tag {
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 3px 10px; border-radius: 4px; font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* LAYOUT */
+  .main {
+    padding: 40px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1400px;
+  }
+
+  /* PANEL */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .panel.full-width { grid-column: 1 / -1; }
+
+  .panel-header {
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+  }
+  .panel-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .panel-body { padding: 20px; }
+
+  /* TREE */
+  .tree { font-size: 12.5px; line-height: 1; }
+  .tree-item {
+    display: flex; align-items: flex-start;
+    padding: 5px 0; cursor: pointer;
+    border-radius: 4px; transition: background 0.15s;
+    position: relative;
+  }
+  .tree-item:hover { background: rgba(255,255,255,0.03); }
+  .tree-item:hover .desc { opacity: 1; }
+
+  .tree-indent { display: inline-block; width: 20px; flex-shrink: 0; }
+  .tree-connector {
+    color: #2a3f5f; font-size: 12px;
+    width: 20px; flex-shrink: 0; text-align: center;
+    line-height: 1.8;
+  }
+  .tree-name { flex: 1; }
+  .folder { color: var(--accent-blue); font-weight: 600; }
+  .file-java { color: #f97316; }
+  .file-jsx { color: var(--accent-teal); }
+  .file-js { color: #eab308; }
+  .file-css { color: var(--accent-pink); }
+  .file-sql { color: var(--accent-purple); }
+  .file-prop { color: var(--accent-green); }
+  .file-xml { color: #fb923c; }
+  .file-json { color: #a78bfa; }
+  .file-md { color: #94a3b8; }
+
+  .desc {
+    font-size: 10px; color: var(--text-muted);
+    margin-left: 10px; opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap; overflow: hidden;
+    font-style: italic;
+    padding-top: 2px;
+  }
+
+  /* SECTION DIVIDER inside tree */
+  .tree-section {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--text-muted); text-transform: uppercase;
+    padding: 12px 0 4px;
+    border-top: 1px solid var(--border);
+    margin-top: 6px;
+  }
+  .tree-section:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+  /* LEGEND */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    padding: 14px 20px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--text-dim);
+  }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+  /* MICROSERVICES FLOW */
+  .ms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px;
+  }
+  .ms-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .ms-box:hover { transform: translateY(-2px); }
+  .ms-emoji { font-size: 22px; margin-bottom: 6px; }
+  .ms-label {
+    font-family: 'Syne', sans-serif; font-size: 12px;
+    font-weight: 700; color: #fff; margin-bottom: 4px;
+  }
+  .ms-sub { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+
+  /* ARCH FLOW */
+  .flow {
+    display: flex; align-items: center;
+    justify-content: center; gap: 0;
+    padding: 24px 20px; flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    text-align: center; min-width: 130px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .flow-box:hover { transform: translateY(-2px); }
+  .flow-box.react { border-color: rgba(20,184,166,0.4); }
+  .flow-box.react:hover { border-color: var(--accent-teal); }
+  .flow-box.spring { border-color: rgba(34,197,94,0.4); }
+  .flow-box.spring:hover { border-color: var(--accent-green); }
+  .flow-box.mysql { border-color: rgba(139,92,246,0.4); }
+  .flow-box.mysql:hover { border-color: var(--accent-purple); }
+  .flow-box.sec { border-color: rgba(249,115,22,0.4); }
+  .flow-box.sec:hover { border-color: var(--accent-orange); }
+
+  .flow-emoji { font-size: 24px; margin-bottom: 6px; }
+  .flow-label {
+    font-family: 'Syne', sans-serif; font-size: 12px;
+    font-weight: 700; color: #fff;
+  }
+  .flow-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .flow-arrow {
+    font-size: 18px; color: var(--text-muted);
+    padding: 0 8px; flex-shrink: 0;
+  }
+  .flow-arrow.double { font-size: 14px; }
+
+  /* LAYER DIAGRAM */
+  .layers { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .layer {
+    border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 14px;
+    border-left: 3px solid;
+  }
+  .layer.l1 { background: rgba(20,184,166,0.07); border-color: var(--accent-teal); }
+  .layer.l2 { background: rgba(59,130,246,0.07); border-color: var(--accent-blue); }
+  .layer.l3 { background: rgba(34,197,94,0.07); border-color: var(--accent-green); }
+  .layer.l4 { background: rgba(249,115,22,0.07); border-color: var(--accent-orange); }
+  .layer.l5 { background: rgba(139,92,246,0.07); border-color: var(--accent-purple); }
+  .layer-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; min-width: 90px; }
+  .layer-items { display: flex; flex-wrap: wrap; gap: 6px; }
+  .layer-chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10.5px; color: var(--text-dim);
+  }
+
+  /* DB TABLES */
+  .db-tables { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .db-table {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .db-table-header {
+    padding: 8px 14px;
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: 0.5px;
+  }
+  .db-table-fields {
+    padding: 6px 14px 10px;
+    display: flex; flex-wrap: wrap; gap: 4px;
+  }
+  .field {
+    font-size: 10px; padding: 2px 7px; border-radius: 3px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: var(--text-dim);
+  }
+  .field.pk { color: #f59e0b; border-color: rgba(245,158,11,0.3); }
+  .field.fk { color: #60a5fa; border-color: rgba(96,165,250,0.3); }
+  .field.enum { color: #a78bfa; border-color: rgba(167,139,250,0.3); }
+
+  /* API TABLE */
+  .api-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .api-table th {
+    background: var(--surface2); color: var(--text-muted);
+    padding: 8px 12px; text-align: left;
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .api-table td {
+    padding: 8px 12px; border-bottom: 1px solid rgba(30,45,69,0.5);
+    vertical-align: middle;
+  }
+  .api-table tr:last-child td { border-bottom: none; }
+  .api-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .method {
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .GET { background: rgba(34,197,94,0.15); color: #22c55e; }
+  .POST { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .PUT { background: rgba(249,115,22,0.15); color: #f97316; }
+  .DELETE { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+  .endpoint { color: var(--text-dim); font-size: 11px; }
+  .ep-desc { color: var(--text-muted); font-size: 10.5px; }
+  .auth-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    background: rgba(139,92,246,0.15); color: #a78bfa;
+  }
+  .public-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    background: rgba(34,197,94,0.1); color: #4ade80;
+  }
+  .supplier-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    background: rgba(249,115,22,0.15); color: #fb923c;
+  }
+  .customer-badge {
+    font-size: 9px; padding: 1px 6px; border-radius: 3px;
+    background: rgba(20,184,166,0.15); color: #2dd4bf;
+  }
+
+  /* PAGES */
+  .pages-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; padding: 20px;
+  }
+  .page-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px;
+    transition: border-color 0.2s;
+  }
+  .page-card:hover { border-color: rgba(249,115,22,0.4); }
+  .page-route { font-size: 10px; color: var(--accent-teal); margin-bottom: 4px; }
+  .page-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .page-features { font-size: 10px; color: var(--text-muted); line-height: 1.6; }
+
+  /* SPRINT PLAN */
+  .sprint-grid { display: flex; flex-direction: column; gap: 8px; padding: 20px; }
+  .sprint-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+  }
+  .sprint-num {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    min-width: 68px; color: var(--accent-orange);
+  }
+  .sprint-focus {
+    font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    min-width: 140px; color: #fff;
+  }
+  .sprint-deliverables { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+
+  /* FOOTER */
+  .footer {
+    grid-column: 1 / -1;
+    text-align: center; padding: 20px;
+    color: var(--text-muted); font-size: 11px;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; padding: 20px; }
+    .panel.full-width { grid-column: 1; }
+    .header { padding: 24px 20px; }
+    h1 { font-size: 24px; }
+    .pages-grid { grid-template-columns: 1fr; }
+    .ms-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="badge">HCL Hackathon 2026 — Use Case 1</div>
+  <h1>Smart Retail <span>Food Ordering</span> Platform</h1>
+  <div class="subtitle">
+    <span>ABC Food Zone — Full-Stack Java Project Structure</span>
+    <span class="tech-tag">⚛ React</span>
+    <span class="tech-tag">🍃 Spring Boot</span>
+    <span class="tech-tag">🐬 MySQL</span>
+    <span class="tech-tag">☕ Java 17</span>
+    <span class="tech-tag">🔐 JWT</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SYSTEM ARCHITECTURE FLOW -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(59,130,246,0.1)">🏗️</div>
+      <span style="color:#fff">System Architecture Flow</span>
+    </div>
+    <div class="flow">
+      <div class="flow-box react">
+        <div class="flow-emoji">⚛️</div>
+        <div class="flow-label">React Frontend</div>
+        <div class="flow-sub">localhost:3000</div>
+      </div>
+      <div class="flow-arrow double">⟺<br><span style="font-size:9px;color:#3b82f6">Axios/HTTP</span></div>
+      <div class="flow-box sec">
+        <div class="flow-emoji">🔐</div>
+        <div class="flow-label">Spring Security</div>
+        <div class="flow-sub">JWT + RBAC</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box spring">
+        <div class="flow-emoji">🍃</div>
+        <div class="flow-label">Spring Boot</div>
+        <div class="flow-sub">localhost:8080</div>
+      </div>
+      <div class="flow-arrow double">⟺<br><span style="font-size:9px;color:#22c55e">JPA/SQL</span></div>
+      <div class="flow-box mysql">
+        <div class="flow-emoji">🐬</div>
+        <div class="flow-label">MySQL DB</div>
+        <div class="flow-sub">Port 3306</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MICROSERVICES -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(249,115,22,0.1)">🧩</div>
+      <span style="color:#f97316">Microservices Architecture</span>
+    </div>
+    <div class="ms-grid">
+      <div class="ms-box" style="border-color:rgba(20,184,166,0.3)">
+        <div class="ms-emoji">🛍️</div>
+        <div class="ms-label">Product Service</div>
+        <div class="ms-sub">Manage product catalog (Pizza, Drinks, Bread); add / update / remove products; stock controlled by Supplier</div>
+      </div>
+      <div class="ms-box" style="border-color:rgba(59,130,246,0.3)">
+        <div class="ms-emoji">📦</div>
+        <div class="ms-label">Order Service</div>
+        <div class="ms-sub">Order placement, tracking, history; parallel queue; auto-cancel unpaid orders after 10 min</div>
+      </div>
+      <div class="ms-box" style="border-color:rgba(34,197,94,0.3)">
+        <div class="ms-emoji">🗃️</div>
+        <div class="ms-label">Inventory Service</div>
+        <div class="ms-sub">Track availability; auto-update stock on confirmation; low-stock notifications to Supplier</div>
+      </div>
+      <div class="ms-box" style="border-color:rgba(249,115,22,0.3)">
+        <div class="ms-emoji">💳</div>
+        <div class="ms-label">Payment Service</div>
+        <div class="ms-sub">Dummy QR (order_id + amount); 'I have completed payment' button; auto-cancel if not clicked in 2 min</div>
+      </div>
+      <div class="ms-box" style="border-color:rgba(236,72,153,0.3)">
+        <div class="ms-emoji">🔔</div>
+        <div class="ms-label">Notification Service</div>
+        <div class="ms-sub">Order confirmations, status updates; alerts on order placed, fulfilled, cancelled, or payment failure</div>
+      </div>
+      <div class="ms-box" style="border-color:rgba(139,92,246,0.3)">
+        <div class="ms-emoji">🎁</div>
+        <div class="ms-label">Promotions & Offers</div>
+        <div class="ms-sub">Seasonal / festive discounts, coupons, scheduled promos; weekend specials, health-day & hourly offers</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKEND STRUCTURE -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(34,197,94,0.1)">🍃</div>
+      <span style="color:#22c55e">Backend — Spring Boot</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Maven Project</span>
+    </div>
+    <div class="panel-body">
+      <div class="tree">
+
+        <div class="tree-section">📁 Root</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/main/java/com/hackathon/retail/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">│</span>
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ SmartRetailApplication.java</span>
+          <span class="desc">Main entry point</span>
+        </div>
+
+        <div class="tree-section">📦 Entity Layer</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 entity/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ User.java</span>
+          <span class="desc">@Entity — id, name, email, password, role(ENUM: CUSTOMER|SUPPLIER)</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ Product.java</span>
+          <span class="desc">@Entity — name, category, price, stock_qty, is_available, supplier(FK)</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ Order.java</span>
+          <span class="desc">@Entity — customer(FK), status(ENUM), total_amount, created_at, paid_at</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderItem.java</span>
+          <span class="desc">@Entity — order(FK), product(FK), quantity, unit_price</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ Payment.java</span>
+          <span class="desc">@Entity — order(FK), qr_code, amount, status(ENUM), confirmed_at</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ Promotion.java</span>
+          <span class="desc">@Entity — name, discount_pct, coupon_code, valid_from, valid_to, type(ENUM)</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ Notification.java</span>
+          <span class="desc">@Entity — user(FK), order(FK), message, sent_at, is_read</span>
+        </div>
+
+        <div class="tree-section">🗄️ Repository Layer</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 repository/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ UserRepository.java</span>
+          <span class="desc">findByEmail, findByRole</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ ProductRepository.java</span>
+          <span class="desc">findByCategory, findBySupplierId, findByIsAvailable</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderRepository.java</span>
+          <span class="desc">findByCustomerId, findByStatus, @Query day-wise supplier view</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderItemRepository.java</span>
+          <span class="desc">findByOrderId</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PaymentRepository.java</span>
+          <span class="desc">findByOrderId, findByStatus</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PromotionRepository.java</span>
+          <span class="desc">findActiveBetween, findByCouponCode</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ NotificationRepository.java</span>
+          <span class="desc">findByUserId, findUnreadByUserId</span>
+        </div>
+
+        <div class="tree-section">⚙️ Service Layer</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 service/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ ProductService.java</span>
+          <span class="desc">CRUD products, manage availability</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderService.java</span>
+          <span class="desc">placeOrder, cancelOrder, queueHandling, autoCancel scheduler</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ InventoryService.java</span>
+          <span class="desc">decrementStock, checkAvailability, lowStockAlert</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PaymentService.java</span>
+          <span class="desc">generateQR, confirmPayment, failOnTimeout, applyDiscount</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PromotionService.java</span>
+          <span class="desc">getActivePromotions, validateCoupon, applyOffer</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ NotificationService.java</span>
+          <span class="desc">sendOrderAlert, sendInventoryAlert, markAsRead</span>
+        </div>
+
+        <div class="tree-section">🌐 Controller Layer</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 controller/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ AuthController.java</span>
+          <span class="desc">/api/auth — register, login</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ ProductController.java</span>
+          <span class="desc">/api/products — CRUD + listing</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderController.java</span>
+          <span class="desc">/api/orders — place, cancel, queue, status</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PaymentController.java</span>
+          <span class="desc">/api/payment — initiate QR, confirm payment</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ PromotionController.java</span>
+          <span class="desc">/api/promotions — get active, create promo</span>
+        </div>
+
+        <div class="tree-section">🔐 Security Layer</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 security/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ SecurityConfig.java</span>
+          <span class="desc">Filter chain, CORS, role-based permit rules</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ JwtUtil.java</span>
+          <span class="desc">Generate & validate JWT tokens</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ JwtFilter.java</span>
+          <span class="desc">OncePerRequestFilter — intercept & verify</span>
+        </div>
+
+        <div class="tree-section">⚠️ Exception & DTO</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 exception/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ GlobalExceptionHandler.java</span>
+          <span class="desc">@ControllerAdvice — handle errors globally</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 dto/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ OrderDTO.java</span>
+          <span class="desc">Order request/response with items list</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-java">☕ PaymentDTO.java</span>
+          <span class="desc">QR payload + confirmation response</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-java">☕ AuthDTO.java</span>
+          <span class="desc">Login request / JWT response payload</span>
+        </div>
+
+        <div class="tree-section">📋 Resources</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/main/resources/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-prop">⚙ application.properties</span>
+          <span class="desc">DB url, JPA config, JWT secret, scheduler config</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-sql">🗃 schema.sql</span>
+          <span class="desc">DDL — all CREATE TABLE statements</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-xml">📄 pom.xml</span>
+          <span class="desc">Maven deps: JPA, MySQL, Security, Lombok, OpenAPI, Scheduler</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Java Entity/Class</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Config/Properties</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>SQL</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>XML</div>
+    </div>
+  </div>
+
+  <!-- FRONTEND STRUCTURE -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(20,184,166,0.1)">⚛️</div>
+      <span style="color:#14b8a6">Frontend — React.js</span>
+      <span style="margin-left:auto;font-size:10px;color:var(--text-muted)">CRA / Vite</span>
+    </div>
+    <div class="panel-body">
+      <div class="tree">
+
+        <div class="tree-section">📁 Root Config</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-json">📦 package.json</span>
+          <span class="desc">axios, react-router-dom, bootstrap</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-js">📄 .env</span>
+          <span class="desc">REACT_APP_API_URL=http://localhost:8080</span>
+        </div>
+
+        <div class="tree-section">⚛️ Source</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ index.js</span>
+          <span class="desc">ReactDOM.render entry point</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ App.js</span>
+          <span class="desc">BrowserRouter + all Routes; role-based routing</span>
+        </div>
+
+        <div class="tree-section">📄 Customer Pages</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/pages/customer/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Home.jsx</span>
+          <span class="desc">Landing page — route: /</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Products.jsx</span>
+          <span class="desc">Browse menu by category — route: /products</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Cart.jsx</span>
+          <span class="desc">Cart summary + coupon + place order — route: /cart</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Orders.jsx</span>
+          <span class="desc">Order history + re-order — route: /orders</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ Payment.jsx</span>
+          <span class="desc">Dummy QR + 2-min timer — route: /payment</span>
+        </div>
+
+        <div class="tree-section">🏪 Supplier Pages</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/pages/supplier/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ SupplierProducts.jsx</span>
+          <span class="desc">Product CRUD + inventory — route: /supplier/products</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ SupplierOrders.jsx</span>
+          <span class="desc">Order queue + status update — route: /supplier/orders</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ SupplierPromotions.jsx</span>
+          <span class="desc">Create & manage promos — route: /supplier/promotions</span>
+        </div>
+
+        <div class="tree-section">🔐 Auth Pages</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/pages/auth/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Login.jsx</span>
+          <span class="desc">JWT login — route: /login</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ Register.jsx</span>
+          <span class="desc">Customer/Supplier register — route: /register</span>
+        </div>
+
+        <div class="tree-section">🧩 Components</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/components/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ Navbar.jsx</span>
+          <span class="desc">Top nav — role-aware links</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ ProductCard.jsx</span>
+          <span class="desc">Product display with Add to Cart</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ CartItem.jsx</span>
+          <span class="desc">Line item with quantity selector</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ OrderCard.jsx</span>
+          <span class="desc">Order status badge + re-order button</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ QRTimer.jsx</span>
+          <span class="desc">Dummy QR display + 2-min countdown</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ PromoBanner.jsx</span>
+          <span class="desc">Active offers banner on home/products</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ ProtectedRoute.jsx</span>
+          <span class="desc">Auth guard + role guard for private routes</span>
+        </div>
+
+        <div class="tree-section">🔗 Services & Utils</div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/services/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-js">📡 api.js</span>
+          <span class="desc">All Axios API call functions</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-js">📡 axiosConfig.js</span>
+          <span class="desc">Base URL + JWT token interceptor</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">├─</span>
+          <span class="tree-name folder">📁 src/context/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">├─</span>
+          <span class="tree-name file-jsx">⚛ AuthContext.jsx</span>
+          <span class="desc">Global auth state (user, token, role, login/logout)</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-jsx">⚛ CartContext.jsx</span>
+          <span class="desc">Cart state (items, add, remove, clear)</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-connector">└─</span>
+          <span class="tree-name folder">📁 src/styles/</span>
+        </div>
+        <div class="tree-item">
+          <span class="tree-indent"></span>
+          <span class="tree-connector">└─</span>
+          <span class="tree-name file-css">🎨 App.css</span>
+          <span class="desc">Global custom styles</span>
+        </div>
+
+      </div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#14b8a6"></div>JSX Component</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div>JS / Config</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div>CSS Style</div>
+    </div>
+  </div>
+
+  <!-- BACKEND LAYERS -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(249,115,22,0.1)">🔄</div>
+      <span style="color:#f97316">Backend Layer Responsibilities</span>
+    </div>
+    <div class="layers">
+      <div class="layer l1">
+        <div class="layer-title" style="color:#14b8a6">Controller</div>
+        <div class="layer-items">
+          <span class="layer-chip">@RestController</span>
+          <span class="layer-chip">@CrossOrigin</span>
+          <span class="layer-chip">@GetMapping</span>
+          <span class="layer-chip">@PostMapping</span>
+          <span class="layer-chip">@PutMapping</span>
+          <span class="layer-chip">ResponseEntity</span>
+        </div>
+      </div>
+      <div class="layer l2">
+        <div class="layer-title" style="color:#3b82f6">Service</div>
+        <div class="layer-items">
+          <span class="layer-chip">@Service</span>
+          <span class="layer-chip">@Transactional</span>
+          <span class="layer-chip">Business Logic</span>
+          <span class="layer-chip">@Scheduled</span>
+          <span class="layer-chip">@RequiredArgsConstructor</span>
+        </div>
+      </div>
+      <div class="layer l3">
+        <div class="layer-title" style="color:#22c55e">Repository</div>
+        <div class="layer-items">
+          <span class="layer-chip">JpaRepository</span>
+          <span class="layer-chip">@Repository</span>
+          <span class="layer-chip">@Query (JPQL)</span>
+          <span class="layer-chip">Derived Methods</span>
+        </div>
+      </div>
+      <div class="layer l4">
+        <div class="layer-title" style="color:#f97316">Entity</div>
+        <div class="layer-items">
+          <span class="layer-chip">@Entity</span>
+          <span class="layer-chip">@Table</span>
+          <span class="layer-chip">@ManyToOne</span>
+          <span class="layer-chip">@OneToMany</span>
+          <span class="layer-chip">@Enumerated</span>
+          <span class="layer-chip">@Data (Lombok)</span>
+        </div>
+      </div>
+      <div class="layer l5">
+        <div class="layer-title" style="color:#8b5cf6">Security</div>
+        <div class="layer-items">
+          <span class="layer-chip">SecurityFilterChain</span>
+          <span class="layer-chip">JwtFilter</span>
+          <span class="layer-chip">UserDetailsService</span>
+          <span class="layer-chip">BCryptEncoder</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DB SCHEMA -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(139,92,246,0.1)">🐬</div>
+      <span style="color:#8b5cf6">MySQL Database Schema</span>
+    </div>
+    <div class="db-tables">
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(20,184,166,0.1);color:#14b8a6">👤 user</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field">name</span>
+          <span class="field">email</span>
+          <span class="field">password</span>
+          <span class="field enum">ENUM role</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(249,115,22,0.1);color:#f97316">🛍️ product</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field">name</span>
+          <span class="field">category</span>
+          <span class="field">price</span>
+          <span class="field">stock_qty</span>
+          <span class="field">is_available</span>
+          <span class="field fk">🔗 supplier_id (FK)</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(59,130,246,0.1);color:#60a5fa">📦 order</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field fk">🔗 customer_id (FK)</span>
+          <span class="field enum">ENUM status</span>
+          <span class="field">total_amount</span>
+          <span class="field">created_at</span>
+          <span class="field">paid_at</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(34,197,94,0.1);color:#22c55e">🧾 order_item</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field fk">🔗 order_id (FK)</span>
+          <span class="field fk">🔗 product_id (FK)</span>
+          <span class="field">quantity</span>
+          <span class="field">unit_price</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(236,72,153,0.1);color:#ec4899">💳 payment</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field fk">🔗 order_id (FK)</span>
+          <span class="field">qr_code</span>
+          <span class="field">amount</span>
+          <span class="field enum">ENUM status</span>
+          <span class="field">confirmed_at</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(139,92,246,0.1);color:#a78bfa">🎁 promotion</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field">name</span>
+          <span class="field">discount_pct</span>
+          <span class="field">coupon_code</span>
+          <span class="field">valid_from</span>
+          <span class="field">valid_to</span>
+          <span class="field enum">ENUM type</span>
+        </div>
+      </div>
+      <div class="db-table">
+        <div class="db-table-header" style="background:rgba(245,158,11,0.1);color:#f59e0b">🔔 notification</div>
+        <div class="db-table-fields">
+          <span class="field pk">🔑 id (PK)</span>
+          <span class="field fk">🔗 user_id (FK)</span>
+          <span class="field fk">🔗 order_id (FK)</span>
+          <span class="field">message</span>
+          <span class="field">sent_at</span>
+          <span class="field">is_read</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REST API TABLE -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(59,130,246,0.1)">🌐</div>
+      <span style="color:#3b82f6">REST API Endpoints</span>
+    </div>
+    <div style="padding:16px 20px;overflow-x:auto">
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Description</th>
+            <th>Access</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/auth/register</td><td class="ep-desc">Register new customer / supplier</td><td><span class="public-badge">Public</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/auth/login</td><td class="ep-desc">Login → returns JWT token</td><td><span class="public-badge">Public</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="endpoint">/api/products</td><td class="ep-desc">List all products with availability</td><td><span class="public-badge">Public</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/products</td><td class="ep-desc">Add new product</td><td><span class="supplier-badge">Supplier</span></td></tr>
+          <tr><td><span class="method PUT">PUT</span></td><td class="endpoint">/api/products/{id}</td><td class="ep-desc">Update product / inventory</td><td><span class="supplier-badge">Supplier</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="endpoint">/api/orders</td><td class="ep-desc">Get orders for logged-in user</td><td><span class="auth-badge">Auth</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/orders</td><td class="ep-desc">Place a new order</td><td><span class="customer-badge">Customer</span></td></tr>
+          <tr><td><span class="method PUT">PUT</span></td><td class="endpoint">/api/orders/{id}/cancel</td><td class="ep-desc">Cancel an order</td><td><span class="customer-badge">Customer</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="endpoint">/api/orders/queue</td><td class="ep-desc">View pending order queue</td><td><span class="supplier-badge">Supplier</span></td></tr>
+          <tr><td><span class="method PUT">PUT</span></td><td class="endpoint">/api/orders/{id}/status</td><td class="ep-desc">Update order status</td><td><span class="supplier-badge">Supplier</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/payment/initiate</td><td class="ep-desc">Generate dummy QR for payment</td><td><span class="customer-badge">Customer</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/payment/confirm</td><td class="ep-desc">Confirm payment completion</td><td><span class="customer-badge">Customer</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="endpoint">/api/promotions</td><td class="ep-desc">Get active promotions & offers</td><td><span class="public-badge">Public</span></td></tr>
+          <tr><td><span class="method POST">POST</span></td><td class="endpoint">/api/promotions</td><td class="ep-desc">Create new promotion</td><td><span class="supplier-badge">Supplier</span></td></tr>
+          <tr><td><span class="method GET">GET</span></td><td class="endpoint">/swagger-ui.html</td><td class="ep-desc">Swagger API documentation UI</td><td><span class="public-badge">Public</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REACT PAGES -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(20,184,166,0.1)">📄</div>
+      <span style="color:#14b8a6">React Pages & Components</span>
+    </div>
+    <div class="pages-grid">
+      <div class="page-card">
+        <div class="page-route">/ — Home</div>
+        <div class="page-name">🏠 Landing Page</div>
+        <div class="page-features">Hero section; browse menu & promotions<br>Key stats / feature highlights<br>Active offers banner (PromoBanner)</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/products — Menu</div>
+        <div class="page-name">🛍️ Browse Products</div>
+        <div class="page-features">Category filter (Pizza, Drinks, Bread…)<br>Filter by availability<br>ProductCard grid with Add to Cart</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/cart — Cart</div>
+        <div class="page-name">🛒 Cart & Checkout</div>
+        <div class="page-features">Cart summary; quantity selector<br>Apply coupon / discount code<br>Bill calculation with offers; Place Order</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/orders — Order Tracking</div>
+        <div class="page-name">📦 Order History</div>
+        <div class="page-features">Customer order history with status badges<br>Quick re-order button per past order<br>Day-wise filter (supplier view)</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/payment — Payment</div>
+        <div class="page-name">💳 Dummy QR Payment</div>
+        <div class="page-features">QR code display (order_id + amount)<br>'I have completed payment' button<br>2-minute countdown timer; auto-cancel</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/supplier/products</div>
+        <div class="page-name">🏪 Supplier Products</div>
+        <div class="page-features">Product list; Add / Edit / Delete<br>Set stock quantity & availability<br>Inventory management dashboard</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/supplier/orders</div>
+        <div class="page-name">📋 Order Queue</div>
+        <div class="page-features">Pending order queue view<br>Update order status (Fulfil / Cancel)<br>Filter by day; view all placed & cancelled</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/supplier/promotions</div>
+        <div class="page-name">🎁 Manage Promotions</div>
+        <div class="page-features">Create seasonal / festive offers<br>Set coupon codes & schedules<br>Weekend discounts, hourly specials</div>
+      </div>
+      <div class="page-card">
+        <div class="page-route">/login & /register</div>
+        <div class="page-name">🔐 Auth Pages</div>
+        <div class="page-features">Login form → JWT stored; role-based routing<br>Register form — Customer or Supplier<br>AuthContext → global user state</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPRINT PLAN -->
+  <div class="panel full-width">
+    <div class="panel-header">
+      <div class="panel-icon" style="background:rgba(34,197,94,0.1)">🗓️</div>
+      <span style="color:#22c55e">Recommended Sprint Plan</span>
+    </div>
+    <div class="sprint-grid">
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 0</div>
+        <div class="sprint-focus">Project Setup</div>
+        <div class="sprint-deliverables">Repo init, DB schema, Swagger config, service skeleton, README</div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 1</div>
+        <div class="sprint-focus">Auth + Products</div>
+        <div class="sprint-deliverables">User registration & login (JWT), Product CRUD, inventory tracking</div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 2</div>
+        <div class="sprint-focus">Orders + Payment</div>
+        <div class="sprint-deliverables">Order placement, queue, auto-cancel (10 min), dummy QR payment, bill calculation</div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 3</div>
+        <div class="sprint-focus">Promotions + Notifications</div>
+        <div class="sprint-deliverables">Coupons, seasonal offers, order & inventory notifications</div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 4</div>
+        <div class="sprint-focus">Frontend + Integration</div>
+        <div class="sprint-deliverables">React UI for Customer & Supplier; full API integration; Postman validation</div>
+      </div>
+      <div class="sprint-row">
+        <div class="sprint-num">Sprint 5</div>
+        <div class="sprint-focus">Bonus + Polish</div>
+        <div class="sprint-deliverables">AI recommendations, order dashboard alerts, performance testing, demo prep</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Smart Retail Food Ordering Platform &nbsp;•&nbsp; ABC Food Zone — Use Case 1 &nbsp;•&nbsp; HCL Hackathon 2026 &nbsp;•&nbsp; React + Spring Boot + MySQL &nbsp;•&nbsp; VR Siddhartha College, Vijayawada
+  </div>
+
+</div>
+</body>
+</html>
